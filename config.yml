@@ -7,4 +7,4 @@ log:
 
 general:
     get_s3_csv_files: >
-       aws s3 ls <bucket> --human-readable --summarize
+       aws s3 ls <> --human-readable --summarize
