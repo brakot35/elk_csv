@@ -26,14 +26,3 @@ $ emacs config.yml
                 e.g. ["x@gmail.com","b@ai.co"]
   * under general
     get_s3_csv_files - edit <bucket> (same as config_env.yml aws.csv)
-
-
-arrange files:
-config_env.yml
-config.yml
-README.md
-example.py
-data_utils
-test_es_driver
-*
-
