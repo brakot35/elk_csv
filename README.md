@@ -4,7 +4,7 @@
 # Install #
 ###########
 1. Requirement
-tested on OS X and EC2 with Ubuntu using python 3.61
+tested on OS X and EC2 with Ubuntu using python 3.6.0
 
 2. creating python environment
 $ virtualenv venv
@@ -26,3 +26,15 @@ $ emacs config.yml
                 e.g. ["x@gmail.com","b@ai.co"]
   * under general
     get_s3_csv_files - edit <bucket> (same as config_env.yml aws.csv)
+
+4. (Optional) Test your configuration
+  $ ipython
+    >>> quert = """ somethihg """
+        (any valied ES query, can be takned e.g. ftom Kibana spy mode request
+	 see https://www.elastic.co/guide/en/kibana/master/vis-spy.html)
+    >>> from test_es_driver import get_data
+    >>> data = get_data(query)
+    now test your data integrity
+
+  If this step doesn't work, tweak with timeouts/thresholds or ask for my specific help
+
