@@ -3,7 +3,7 @@ log:
     level: logging.INFO
     maxBytes: 50000000
     backupCount: 20
-    notify_to: [""]
+    notify_to: ["crebdream@gmail.com"]
 
 general:
     get_s3_csv_files: >
