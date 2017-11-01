@@ -1,0 +1,9 @@
+elk:
+    url: 'http://localhost:9200'
+    user: 'elastic'
+    pw: 'changeme'
+    index: '<iii>'
+    type: '<ttt>'
+
+aws:
+    csv:   '<bucket>'

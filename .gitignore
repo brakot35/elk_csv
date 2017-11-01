@@ -1,0 +1,12 @@
+\#*
+.\#*
+venv
+__pycache__
+*~
+data
+.DS_Store
+get_csv.log
+log_query.jsonl
+nohup.out
+*.yml
+

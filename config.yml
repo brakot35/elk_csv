@@ -1,0 +1,10 @@
+log:
+    get_csv_fn: get_csv.log
+    level: logging.INFO
+    maxBytes: 50000000
+    backupCount: 20
+    notify_to: [""]
+
+general:
+    get_s3_csv_files: >
+       aws s3 ls <bucket> --human-readable --summarize
