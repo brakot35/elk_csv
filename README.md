@@ -1,11 +1,31 @@
 # My project's README
 
 ###########
+# Purpose #
+###########
+CSV export in a Python script running on the server, triggered by kibana,
+can be used for any size, with an option to upload to S3.
+Other CSV export are avialable elsewhere, the advantages of this repo:
+(1) Kibana integration (this is work in progress)
+(2) Support any size of file, using ElasticSearch built in scrool
+(3) When download process is complete, file is uplaoded to S3 and
+    notification email is sent to user.
+
+###########
 # Install #
 ###########
-1. Requirement
-tested on OS X and EC2 with Ubuntu using python 3.6.0
+0. Requirement
+tested on:
+* OS X and
+* EC2 m3.medium / m3.2xlarge with Ubuntu 16 using
+* AWS account and write credentials for S3 bucket
+* clone the project into ELK_CSV_HOME
 
+1. Have to install:
+   python 3.6.0
+   ElasticSearch - I've used docker version
+   Kibana
+   
 2. creating python environment
 $ virtualenv venv
 $ source venv/bin/activate
@@ -38,3 +58,44 @@ $ emacs config.yml
 
   If this step doesn't work, tweak with timeouts/thresholds or ask for my specific help
 
+5. Kibana integration, disclaimer here
+   This part is work in progress and implemented as a work around for a problem I have.
+   Let's take it in a few steps (I there is a demand, I'll make this a plugin).
+
+   CODE_HOME shoud be the place where the git repo was cloned to.
+   KIBANA_HOME should be where Kibana is installed
+
+   5.1 Plugin
+   I base my code on the example my-new-plugin, which sets up a server listen for the http requests to
+   get the csv.
+   *** create the new_plugin
+
+   cd $CODE_HOME
+   cp index.html $KIBANA_HOME/plugins/my-new-plugin/public/templates/index.html # text
+   cp index.js   $KIBANA_HOME/plugins/my-new-plugin
+   cp app.js     $KIBANA_HOME/plugins/my-new-plugin/public/app.js #client (test_1 is called by index.js)
+   cp example.js $KIBANA_HOME/plugins/my-new-plugin/server/routes/example.js # Line BELOW:
+   cp invoke_get_list.py $KIBANA_HOME/plugins/my-new-plugin/server/routes/
+
+   5.2 Add the hook to call the get_csv
+   This is the tricky part, I had to decide on GUI to click the CSV button and also somehow to 
+
+I attach it to agg_table , but I wasn't able to find the query itself from client side.
+   I have opened an issue about it - but no resolution yet.
+   See here:
+   
+   cp CODE_HOME/example.js plugins/my-new-plugin/server/routes/
+
+   $ npm install underscore
+
+5.3
+   $ cd KIBANA_HOME
+   $ cp CODE_HOME/invoke_get_csv.py plugins/my-new-plugin/server/routes/
+   $ cp CODE_HOME/agg_table.html src/ui/public/agg_table/
+   $ cp CODE_HOME/agg_table.js src/ui/public/agg_table/
+   
+
+5.4 Getting the query from tshark
+   $ sudo apt-get install tshark
+   
+   cd /home/ubuntu/cap&&nohup sudo tcpdump -l -i docker0 -w dump  -W 2 -C 1 dst port 9200
