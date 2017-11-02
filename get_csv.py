@@ -56,11 +56,23 @@ def get_query(fn):
     except Exception as e:
         return query
 
+def read_data(q):
+    logger.debug(q)
+
+    es_query = {"query":q["query"]}
+    logger.info({"es_query":es_query})
+        
+    hits = esd.read_all_data(es_query, cfg['elk']['index'], cfg['elk']['type'], 5000)
+        
+    logger.info({"first hit":hits[0]})
+    return(hits)
+
+
 try:
     before = time.time()
     esd    = ElasticSearchDriver(logger, cfg)
 
-    os.chdir('/home/ubuntu/cap/')
+    os.chdir(cfg['general']['cap_lib'])
     files = glob.glob("dump*")
     logger.info({"files":files})
     files.sort(key=os.path.getmtime,reverse=True)
@@ -70,25 +82,19 @@ try:
     logger.info({"query":last_query})
 
     if 'query' in last_query:
-        logger.debug(last_query)
-
-        es_query = {"query":last_query["query"]}
-        logger.info({"es_query":es_query})
-        
-        hits = esd.read_all_data(es_query, cfg['elk']['index'], cfg['elk']['type'], 5000)
-        
-        logger.info({"first hit":hits[0]})
+        hits_json = read_data(last_query)
 
         time_str = time.ctime().replace(' ','_').replace(':','_')
-        dreams_str = to_csv(hits).getvalue()
-        logger.info({"first2k chars":dreams_str[0:2000]})
+        hits_csv = to_csv(hits_json).getvalue()
+        
+        logger.info({"first2k chars":hits_csv[0:2000]})
         bucket = cfg['aws']['csv']
-        fn = f'dreams_{time_str}.csv'
-        upload(bucket, fn, dreams_str)
+        fn = f'data_{time_str}.csv'
+        upload(bucket, fn, hits_csv)
 
-        duration = (time.time()-before)
-        body = f'https://s3-us-west-2.amazonaws.com/{bucket}/{fn}'
-        logger.info({"hits-keys":len(hits), "duration":duration, "s3":body})
+        aws_pref = cfg['general']['aws_pref']
+        body = f'{aws_pref}/{bucket}/{fn}'
+        logger.info({"hits-keys":len(hits), "duration":(time.time()-before), "s3":body})
 
         email_notify(cfg['log']['notify_to'], "New csv is ready for download from S3", body)
 

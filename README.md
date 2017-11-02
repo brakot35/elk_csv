@@ -3,28 +3,44 @@
 ###########
 # Purpose #
 ###########
-CSV export in a Python script running on the server, triggered by kibana,
-can be used for any size, with an option to upload to S3.
-Other CSV export are avialable elsewhere, the advantages of this repo:
+CSV export for large databases (any size).
+Other CSV export tools are avialable elsewhere, the advantages of this repo:
 (1) Kibana integration (this is work in progress)
 (2) Support any size of file, using ElasticSearch built in scrool
-(3) When download process is complete, file is uplaoded to S3 and
+(3) When download process is complete, csv file is uplaoded to S3 and
     notification email is sent to user.
+
+Notice: This is work in progress.
+What's working: The Python scirpt with JSON query as input thatcan be used
+for any size, with an option to upload to S3.
+
+What's work in progress: The tools is triggered by kibana, but I haven't found
+a proper way as of now to send the query. So I'm using a hack (descibed below)
+which could work OK if you have a small number of users and also you are writing
+the Kibana dashboard for them (or for yourself) so you can embed the specific
+query in the Dashboard.
+
+TODO: If you're a good JS developer and can give me a hand here, please contact
+leofer@gmail.com. What I need is a proper way to send the query JSON text
+from the browser to the node server. This would improve my tool significantly for
+me, my custmers and the community.
 
 ###########
 # Install #
 ###########
 0. Requirement
-tested on:
-* OS X and
-* EC2 m3.medium / m3.2xlarge with Ubuntu 16 using
-* AWS account and write credentials for S3 bucket
-* clone the project into ELK_CSV_HOME
+tested on: EC2 m3.medium / m3.2xlarge with Ubuntu 16 using
 
-1. Have to install:
+1. Prerequisite:
    python 3.6.0
    ElasticSearch - I've used docker version
    Kibana
+   AWS:
+     * account and write credentials for S3 bucket (for csv file to be uploaded)
+     * aws configure (need AWSAccessKeyId and AWSSecretKey) on the server
+     
+   clone elk_scv the project into ELK_CSV_HOME
+      $ git clone https://github.com/brakot35/elk_csv.git
    
 2. creating python environment
 $ virtualenv venv
